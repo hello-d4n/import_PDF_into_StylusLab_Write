@@ -28,3 +28,5 @@ During the installation process, make sure to check "Add application directory t
 * __GhostScript__ : Download link : [https://www.ghostscript.com/download/gsdnld.html](https://www.ghostscript.com/download/gsdnld.html) (AGPL Release)
 
 ## Download
+
+Download the executable in the [Release section](https://github.com/hello-d4n/import_PDF_into_StylusLab_Write/releases)
