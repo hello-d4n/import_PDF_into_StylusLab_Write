@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from my_module.module import add_quotes, is_gs_installed, get_abs_path_to_convert_exe
 import my_module.module as mod
 import tkinter as tk
 
@@ -9,10 +9,10 @@ myApp.set_icon("icon.ico")
 
 myApp.display_title()
 
-if not mod.is_gs_installed():
+if not is_gs_installed():
     myApp.display_gs_not_found_error()
 
-ABS_PATH_CONVERT = mod.get_abs_path_to_convert_exe()
+ABS_PATH_CONVERT = get_abs_path_to_convert_exe()
 if ' ' in ABS_PATH_CONVERT:
     ABS_PATH_CONVERT = '"' + ABS_PATH_CONVERT + '"'
 
