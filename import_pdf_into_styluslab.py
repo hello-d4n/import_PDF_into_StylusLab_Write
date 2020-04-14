@@ -21,6 +21,6 @@ else:
 
 myApp.display_pdf_selection()
 myApp.display_options()
-myApp.display_convertion_launcher()
+myApp.display_conversion_launcher()
 
 window.mainloop()
