@@ -14,7 +14,7 @@ The following softwares have to be installed on your computer :
 
 * __ImageMagick__ : Download link : ftp://ftp.imagemagick.org/pub/ImageMagick/binaries
 
-If you don't know which file to download, try one which ends by *Q16-x86-static.exe*. I used ImageMagick-6.9.11-6-Q16-x86-static.exe to make this program.
+If you don't know which file to download, try one which ends by *Q16-x86-static.exe*. I used *ImageMagick-6.9.11-6-Q16-x86-static.exe* to make this program.
 
 During the installation process, make sure to check "Add application directory to your system path" :
 
