@@ -7,10 +7,10 @@ window = tk.Tk()
 myApp = mod.MainWindow(window)
 myApp.set_icon("icon.ico")
 
+myApp.display_title()
+
 if not mod.is_gs_installed():
     myApp.display_gs_not_found_error()
-
-myApp.display_title()
 
 ABS_PATH_CONVERT = mod.get_abs_path_to_convert_exe()
 
