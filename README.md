@@ -4,11 +4,16 @@
 
 This program is for **Windows users only** and was written in Python 3. It is inspired from the script written by [sdfgeoff](https://github.com/sdfgeoff/stylus_labs_pdf_converter) for linux users and I've added features (such as a GUI).
 
-## Demo :
+
+* [Demo](#demo)
+* [Requirements](#requirements)
+* [Download](#download)
+
+## Demo
 
 [![Watch the video](https://i.imgur.com/HAOabaX.png)](https://vimeo.com/407703378)
 
-## Requirements :
+## Requirements
 
 The 2 following softwares have to be installed on your computer :
 
@@ -22,3 +27,4 @@ During the installation process, make sure to check "Add application directory t
 
 * __GhostScript__ : Download link : [https://www.ghostscript.com/download/gsdnld.html](https://www.ghostscript.com/download/gsdnld.html) (AGPL Release)
 
+## Download
