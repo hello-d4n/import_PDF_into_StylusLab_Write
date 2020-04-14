@@ -32,6 +32,7 @@ def center_window(win):
     win.geometry("+%d+%d" % (x, y))
     win.deiconify()
 
+
 def find(name, path):
     """ Search a file and return the first match.
     
@@ -44,6 +45,12 @@ def find(name, path):
 
 
 def is_gs_installed():
+    # try first
+    if find('gswin64c.exe', 'C:/Program Files'):
+        return True
+    if find('gswin32c.exe', 'C:/Program Files'):
+        return True
+    # then...
     drive_letter = os.getenv("SystemDrive")
     where_to_search = drive_letter + '/'
     if find("gswin64c.exe", where_to_search) != None:
@@ -62,6 +69,12 @@ def get_abs_path_to_convert_exe():
     ImageMagick installation folder. Return the abs path if found, return False if not.
 
     """
+    # 1st try
+    path_convert_exe = find('convert.exe', 'C:/Program Files')
+    # --- there is a 'convert.exe' in system32 folder
+    if (not path_convert_exe == None) and ('system32' not in path_convert_exe):
+        return path_convert_exe
+    # 2nd try
     listPATH = os.environ['PATH'].split(';')
     for path in listPATH:
         if ('Magick' in path) or ('magick' in path) or ('imagemag' in path):
@@ -323,8 +336,8 @@ class MainWindow:
         self.bLaunch = tk.Button(self.frConversionLauncher)
 
 
-    def set_icon(self, file):
-        self.window.iconbitmap(file)
+    def set_icon(self, filename):
+        self.window.iconbitmap(filename)
 
 
     def display_title(self):
@@ -370,7 +383,7 @@ class MainWindow:
         ).pack()
         frGsNotFound.pack(pady=20)
         
-
+        
     def set_abs_path_to_convert_exe(self, abs_path_to_convert_exe):
         """ Method only used if convert.exe is in PATH variable. """
         self.lAbsPathConvertExe.configure(text=abs_path_to_convert_exe)
@@ -392,7 +405,7 @@ class MainWindow:
         ).pack()
 
         self.bSelectConvertExe.configure(
-            text="Choose file",
+            text="Select 'convert.exe'",
             command=self.when_bSelectConvertExe_clicked
         )
         self.bSelectConvertExe.pack(padx=5, pady=5, side=tk.LEFT)
@@ -419,7 +432,7 @@ class MainWindow:
         except PermissionError:
             error_msg = "It seems that the programm does not have permission to rename\n" \
                 "the name or the parent directory(ies) of the PDF file. \n\n" \
-                "Try to remove from the filename (or/and directories name) the following characters :\n" \
+                "Try to remove from the filename (or folder name) the following characters :\n" \
                 " '%'  '@'  '~'  ':'  '<'  '>'  '?'  '!'  '*'  '|'\t and retry.\n\n" \
                 "If it still does not work, then pleace retry with Administrator Privileges\n" \
                 "(right click on the exe file and click 'Run as administrator')."
