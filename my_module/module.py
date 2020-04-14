@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+
 from webbrowser import open_new
 from tkinter import filedialog
 import tkinter as tk
 import os
+import sys
 import base64
 import shutil
 
@@ -18,7 +21,40 @@ def display_error_window(error_name, msg):
         text="OK",
         command=lambda: error_window.destroy()
     ).pack(side=tk.TOP)
-    permission_error_frame.pack(padx=20, pady=15)
+    permission_error_frame.pack(padx=15, pady=10)
+
+
+def center_window(win):
+    win.withdraw()
+    win.update_idletasks()
+    x = (win.winfo_screenwidth() - win.winfo_reqwidth()) / 2
+    y = (win.winfo_screenheight() - win.winfo_reqheight()) / 2
+    win.geometry("+%d+%d" % (x, y))
+    win.deiconify()
+
+def find(name, path):
+    """ Search a file and return the first match.
+    
+    :name: 'example.txt'
+    :path: the path to start looking for the file
+    """
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
+
+
+def is_gs_installed():
+    drive_letter = os.getenv("SystemDrive")
+    where_to_search = drive_letter + '/'
+    if find("gswin64c.exe", where_to_search) != None:
+        return True
+    if find("gswin32c.exe", where_to_search) != None:
+        return True
+    if find("gswin64.exe", where_to_search) != None:
+        return True
+    if find("gswin32.exe", where_to_search) != None:
+        return True
+    return False
 
 
 def get_abs_path_to_convert_exe():
@@ -142,7 +178,7 @@ def create_output_dir(abs_path_pdf):
         try:
             os.mkdir(output_dir)
         except PermissionError:
-            display_error_window("Access denied", "Please try again.")
+            display_error_window("Access denied", "Access denied. Please try again.")
             return "Failed"
     return output_dir
 
@@ -152,6 +188,8 @@ def conversion(abs_path_pdf, abs_path_convert_exe, density, int_transparent_bg):
     pdf_name = get_dir_and_name(abs_path_pdf)[1]
    
     abs_path_output_dir = create_output_dir(abs_path_pdf)
+    if abs_path_output_dir == "Failed":
+        return "Retry"
     
     # Conversion PDF --> JPG
     if abs_path_convert_exe == None or abs_path_convert_exe[-11:] != 'convert.exe':
@@ -165,11 +203,12 @@ def conversion(abs_path_pdf, abs_path_convert_exe, density, int_transparent_bg):
     else:
         transparency_option = ''
     
-    command = abs_path_convert_exe + \
+    print_version_cmd = abs_path_convert_exe + ' -version'
+    conversion_cmd = abs_path_convert_exe + ' -verbose ' + \
         density_option + transparency_option + \
         ' ' + abs_path_pdf + ' ' + abs_path_output_dir + '/' + pdf_name + '.jpg'
-    print(command)
-    os.system(command)
+    
+    os.system(print_version_cmd + ' && ' + conversion_cmd)
 
     # Getting the number of pages
     list_img = [name for name in os.listdir(abs_path_output_dir)]
@@ -224,9 +263,9 @@ def conversion(abs_path_pdf, abs_path_convert_exe, density, int_transparent_bg):
     <head>
     <title>{}</title>
     <script type="text/writeconfig">
-    <int name="pageNum" value="{}" />
-    <float name="xOffset" value="0.0" />
-    <float name="yOffset" value="0.0" />
+    <int name="pageNum" value="0" />
+    <float name="xOffset" value="-390.196" />
+    <float name="yOffset" value="-73.5294" />
     </script>
     </head>
     <body>
@@ -234,7 +273,7 @@ def conversion(abs_path_pdf, abs_path_convert_exe, density, int_transparent_bg):
     <img id='thumbnail' style='display:none;' src='data:image/jpg;base64,{}'/>
     {}
     </body>
-    </html>'''.format(pdf_name, number_of_pages, thumbail_data_uri, body_string)
+    </html>'''.format(pdf_name, thumbail_data_uri, body_string)
 
     print("Saving HMTL file")
     with open(abs_path_output_dir + '/' + pdf_name +'.html', 'w') as ht:
@@ -251,20 +290,8 @@ class MainWindow:
     
     def __init__(self, window):
         self.window = window
-        tk.Label(
-            self.window,
-            text="Import PDF into Stylus Lab 'Write'",
-            font=('Helvetica', 18, 'bold')
-            ).pack()
-        url_github_repo = "https://github.com/hello-d4n/import_PDF_into_StylusLab_Write"
-        link = tk.Label(
-            self.window,
-            text = "https://github.com/hello-d4n/import_PDF_into_StylusLab_Write",
-            font=('Helvetica', 8, 'italic'),
-            cursor="hand2"
-        )
-        link.pack()
-        link.bind("<Button-1>", lambda e: open_new(url_github_repo))
+        self.window.title("Convert PDF for StylusLab")
+        
         self.frPathConvertNotFound = tk.Frame(self.window)
         self.bSelectConvertExe = tk.Button(self.frPathConvertNotFound)
         self.lAbsPathConvertExe = tk.Label(self.frPathConvertNotFound)
@@ -277,6 +304,7 @@ class MainWindow:
         self.abs_path_pdf = ""
 
         self.frWhitespaceError = tk.Frame(self.frSelectPDF)
+        self.lWhpaceErrorMsg = tk.Label(self.frWhitespaceError)
         self.bChooseAnotherPDF = tk.Button(self.frWhitespaceError)
         self.bRename = tk.Button(self.frWhitespaceError)
 
@@ -295,9 +323,54 @@ class MainWindow:
         self.bLaunch = tk.Button(self.frConversionLauncher)
 
 
-    def set_title(self, title):
-        self.window.title(title)
+    def set_icon(self, file):
+        self.window.iconbitmap(file)
+
+
+    def display_title(self):
+        tk.Label(
+            self.window,
+            text="Import PDF into Stylus Lab 'Write'",
+            font=('Helvetica', 18, 'bold')
+            ).pack()
+        url_github_repo = "https://github.com/hello-d4n/import_PDF_into_StylusLab_Write"
+        link = tk.Label(
+            self.window,
+            text = "https://github.com/hello-d4n/import_PDF_into_StylusLab_Write",
+            font=('Helvetica', 8, 'italic'),
+            cursor="hand2"
+        )
+        link.pack()
+        link.bind("<Button-1>", lambda e: open_new(url_github_repo))
     
+
+    def display_gs_not_found_error(self):
+        error_window = tk.Tk()
+        center_window(error_window)
+        error_window.title("GhostScript not found")
+        permission_error_frame = tk.Frame(error_window)
+        tk.Label(
+            permission_error_frame,
+            text="It seems that GhostScript is not installed on your computer.\n" \
+                "Please make sure to install GhostScript. You can download it here :"
+        ).pack()
+        lDownloadLink = tk.Label(
+            permission_error_frame,
+            text = "https://www.ghostscript.com/download/gsdnld.html (choose AGP Licence)",
+            font=('Helvetica', 9, 'italic'),
+            foreground="blue",
+            cursor="hand2"
+        )
+        lDownloadLink.pack(pady=5)
+        link = "https://www.ghostscript.com/download/gsdnld.html"
+        lDownloadLink.bind("<Button-1>", lambda e: open_new(link))
+        tk.Button(
+            permission_error_frame,
+            text="OK",
+            command=lambda:[error_window.destroy(), self.window.deiconify()]
+        ).pack(pady=5)
+        permission_error_frame.pack(padx=15, pady=10)
+        
 
     def set_abs_path_to_convert_exe(self, abs_path_to_convert_exe):
         """ Method only used if convert.exe is in PATH variable. """
@@ -346,7 +419,7 @@ class MainWindow:
             renamed_path = replace_char_in_path(choosen_path, ' ', '_')
         except PermissionError:
             error_msg = "It seems that the programm does not have permission to rename\n" \
-                "the name or the parent directory(ies) to the file. \n\n" \
+                "the name or the parent directory(ies) of the PDF file. \n\n" \
                 "Try to remove from the filename (or/and directories name) the following characters :\n" \
                 " '%'  '@'  '~'  ':'  '<'  '>'  '?'  '!'  '*'  '|'\t and retry.\n\n" \
                 "If it still does not work, then pleace retry with Administrator Privileges\n" \
@@ -372,15 +445,15 @@ class MainWindow:
                 self.bLaunch.configure(state="disabled")
                 self.bChoosePDF.configure(state="disabled")
 
-                tk.Label(
-                    self.frWhitespaceError,
+                self.lWhpaceErrorMsg.configure(
                     text="Whitespace character(s) have benn detected in the filename or path of the PDF.\n" \
                         "To work properly, this programm needs that the PDF filename or path does not include \n" \
                         "whitespace character(s). To solve this problem, the file must be renamed by \n" \
                         "replacing each whitespace character by an underscore symbol ( _ ). \n" \
                         "What would you like to do ?",
                     foreground="blue"
-                    ).pack()
+                )
+                self.lWhpaceErrorMsg.pack()
 
                 self.bRename.configure(
                     text="Rename file",
@@ -428,7 +501,7 @@ class MainWindow:
     def display_options(self):
         
         self.cbBgIsTransparent.configure(
-            text="PDF has transparent background (check this case if the output document "\
+            text="PDF has transparent background (check this box if the output document "\
                 "has a black bakcground)",
             variable=self.PDFHasTranspBackground,
             offvalue=0,
@@ -486,23 +559,8 @@ class MainWindow:
         output_dir = conversion(abs_path_to_pdf, abs_path_to_convert, density, bool_transparent_bg)
         
         frAfterConversion = tk.Frame(self.window)
-        if not output_dir == "Failed":
-            tk.Label(
-                frAfterConversion,
-                text="PDF converted SUCCESSFULY. Converted document is located at :\n" + output_dir,
-                background="gray80"
-                ).pack(pady=3)
-            tk.Button(
-                frAfterConversion,
-                text="Open folder File Explorer",
-                command=lambda: os.startfile(output_dir)
-                ).pack()
-            tk.Button(
-                frAfterConversion,
-                text="Convert an other PDF",
-                command=lambda: self.when_bConvertAnotherPDF_clicked(frAfterConversion)
-                ).pack()
-        else:
+
+        if output_dir == "Failed":
             tk.Label(
                 frAfterConversion,
                 text="Conversion FAILED :( ",
@@ -513,10 +571,34 @@ class MainWindow:
                 text="Convert an other PDF or Retry",
                 command=lambda: self.when_bConvertAnotherPDF_clicked(frAfterConversion)
                 ).pack()
+        elif output_dir == "Retry":
+            self.bChoosePDF.configure(state="normal")
+            self.bLaunch.configure(state="normal")
+            self.eDensityValue.configure(state="normal")
+        else:
+            tk.Label(
+                frAfterConversion,
+                text="PDF converted SUCCESSFULY. Converted document is located at :\n" + output_dir,
+                background="gray80"
+                ).pack(pady=3)
+            tk.Button(
+                frAfterConversion,
+                text="Open folder in File Explorer",
+                command=lambda: os.startfile(output_dir)
+                ).pack()
+            tk.Button(
+                frAfterConversion,
+                text="Convert an other PDF",
+                command=lambda: self.when_bConvertAnotherPDF_clicked(frAfterConversion)
+                ).pack()
         frAfterConversion.pack(padx=10, pady=5)
 
-
     def display_convertion_launcher(self):
+        tk.Label(
+            self.frConversionLauncher,
+            text="\nConversion may take some time if the PDF have a lot of pages",
+            font=('helvetica 8 italic')
+            ).pack()
         self.bLaunch.configure(
             text="Launch conversion",
             command=self.when_bLaunch_clicked,
