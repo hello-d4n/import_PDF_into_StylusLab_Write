@@ -396,14 +396,19 @@ class MainWindow:
 
     def when_bSelectConvertExe_clicked(self):
             choosen_path = browse_in_explorer('.exe')
-            if ' ' in choosen_path:
-                choosen_path = add_quotes(choosen_path)
-                L = choosen_path.split('/')
-                choosen_path = L[0]
-                for elem in L:
-                    choosen_path += 2*'\\' + elem
-            else:
-                self.lAbsPathConvertExe.configure(text=browse_in_explorer('.exe'))
+            if not choosen_path == '':
+                if choosen_path[-4:] == '.exe':
+                    if ' ' in choosen_path:
+                        choosen_path = add_quotes(choosen_path)
+                        L = choosen_path.split('/')
+                        choosen_path = L[0]
+                        for elem in L[1:]:
+                            choosen_path += 2*'\\' + elem
+                        self.lAbsPathConvertExe.configure(text=choosen_path)
+                    else:
+                        self.lAbsPathConvertExe.configure(text=choosen_path)
+                else:
+                    display_error_window("Filetype Error", "Please choose a executable file.")
 
 
     def display_get_convert_manually(self):
@@ -520,7 +525,9 @@ class MainWindow:
                 self.lAbsPathPDF.configure(foreground="green4")
                 self.bLaunch.configure(state="normal")
         else:
-            display_error_window("Filetype Error", "Please choose a PDF file.")
+            if not choosen_path == '':
+                print(choosen_path)
+                display_error_window("Filetype Error", "Please choose a PDF file.")
 
 
     def display_pdf_selection(self):
