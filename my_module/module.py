@@ -395,7 +395,15 @@ class MainWindow:
 
 
     def when_bSelectConvertExe_clicked(self):
-            self.lAbsPathConvertExe.configure(text=browse_in_explorer('.exe'))
+            choosen_path = browse_in_explorer('.exe')
+            if ' ' in choosen_path:
+                choosen_path = add_quotes(choosen_path)
+                L = choosen_path.split('/')
+                choosen_path = L[0]
+                for elem in L:
+                    choosen_path += 2*'\\' + elem
+            else:
+                self.lAbsPathConvertExe.configure(text=browse_in_explorer('.exe'))
 
 
     def display_get_convert_manually(self):
