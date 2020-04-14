@@ -13,14 +13,13 @@ if not is_gs_installed():
     myApp.display_gs_not_found_error()
 
 ABS_PATH_CONVERT = get_abs_path_to_convert_exe()
-if ' ' in ABS_PATH_CONVERT:
-    ABS_PATH_CONVERT = add_quotes(ABS_PATH_CONVERT)
-    ABS_PATH_CONVERT = mod.double_backslash(ABS_PATH_CONVERT)
-    print(ABS_PATH_CONVERT)
 
 if ABS_PATH_CONVERT == None:
     myApp.display_get_convert_manually()
 else:
+    if ' ' in ABS_PATH_CONVERT:
+        ABS_PATH_CONVERT = add_quotes(ABS_PATH_CONVERT)
+        ABS_PATH_CONVERT = mod.double_backslash(ABS_PATH_CONVERT)
     myApp.set_abs_path_to_convert_exe(ABS_PATH_CONVERT)
 
 myApp.display_pdf_selection()
