@@ -345,17 +345,15 @@ class MainWindow:
     
 
     def display_gs_not_found_error(self):
-        error_window = tk.Tk()
-        center_window(error_window)
-        error_window.title("GhostScript not found")
-        permission_error_frame = tk.Frame(error_window)
+        frGsNotFound = tk.Frame()
         tk.Label(
-            permission_error_frame,
+            frGsNotFound,
             text="It seems that GhostScript is not installed on your computer.\n" \
-                "Please make sure to install GhostScript. You can download it here :"
+                "Please make sure to install GhostScript. You can download it here :",
+            font=('Helvetica', 10, 'bold')
         ).pack()
         lDownloadLink = tk.Label(
-            permission_error_frame,
+            frGsNotFound,
             text = "https://www.ghostscript.com/download/gsdnld.html (choose AGP Licence)",
             font=('Helvetica', 9, 'italic'),
             foreground="blue",
@@ -364,12 +362,13 @@ class MainWindow:
         lDownloadLink.pack(pady=5)
         link = "https://www.ghostscript.com/download/gsdnld.html"
         lDownloadLink.bind("<Button-1>", lambda e: open_new(link))
-        tk.Button(
-            permission_error_frame,
-            text="OK",
-            command=lambda:[error_window.destroy(), self.window.deiconify()]
-        ).pack(pady=5)
-        permission_error_frame.pack(padx=15, pady=10)
+        tk.Label(
+            frGsNotFound,
+            text="If GhostScript is already installed on your computer, ignore "\
+                "this message.",
+            font=('Helvetica', 10, 'bold')
+        ).pack()
+        frGsNotFound.pack(pady=20)
         
 
     def set_abs_path_to_convert_exe(self, abs_path_to_convert_exe):
