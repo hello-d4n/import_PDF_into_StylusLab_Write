@@ -69,12 +69,6 @@ def get_abs_path_to_convert_exe():
     ImageMagick installation folder. Return the abs path if found, return False if not.
 
     """
-    # 1st try
-    path_convert_exe = find('convert.exe', 'C:/Program Files')
-    # --- there is a 'convert.exe' in system32 folder
-    if (not path_convert_exe == None) and ('system32' not in path_convert_exe):
-        return path_convert_exe
-    # 2nd try
     listPATH = os.environ['PATH'].split(';')
     for path in listPATH:
         if ('Magick' in path) or ('magick' in path) or ('imagemag' in path):
