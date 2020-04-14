@@ -520,7 +520,7 @@ class MainWindow:
                 self.lAbsPathPDF.configure(foreground="green4")
                 self.bLaunch.configure(state="normal")
         else:
-            print("Please choose a PDF file")
+            display_error_window("Filetype Error", "Please choose a PDF file.")
 
 
     def display_pdf_selection(self):
