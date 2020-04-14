@@ -219,14 +219,13 @@ def conversion(abs_path_pdf, abs_path_convert_exe, density, int_transparent_bg):
     else:
         transparency_option = ''
     
-    # print_version_cmd = abs_path_convert_exe + ' -version'
+    print_version_cmd = abs_path_convert_exe + ' -version'
     conversion_cmd = abs_path_convert_exe + ' -verbose ' + \
         density_option + transparency_option + \
         ' ' + abs_path_pdf + ' ' + abs_path_output_dir + '/' + pdf_name + '.jpg'
     
     print(conversion_cmd)
-    # os.system(conversion_cmd)
-    subprocess.call(shlex.split(conversion_cmd))
+    subprocess.call(shlex.split(print_version_cmd + ' && ' + conversion_cmd))
 
     # Getting the number of pages
     list_img = [name for name in os.listdir(abs_path_output_dir)]
