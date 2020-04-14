@@ -46,9 +46,9 @@ def find(name, path):
 
 def is_gs_installed():
     # try first
-    if find('gswin64c.exe', 'C:/Program Files'):
+    if find('gswin64c.exe', 'C:/Program Files') != None:
         return True
-    if find('gswin32c.exe', 'C:/Program Files'):
+    if find('gswin32c.exe', 'C:/Program Files') != None:
         return True
     # then...
     drive_letter = os.getenv("SystemDrive")
