@@ -33,6 +33,14 @@ def center_window(win):
     win.deiconify()
 
 
+def add_quotes(path):
+    return '"' + path + '"'
+
+
+def remove_quotes(quoted_path):
+    return quoted_path[1:-1]
+
+
 def find(name, path):
     """ Search a file and return the first match.
     
@@ -190,7 +198,7 @@ def conversion(abs_path_pdf, abs_path_convert_exe, density, int_transparent_bg):
         return "Retry"
     
     # Conversion PDF --> JPG
-    if abs_path_convert_exe == None or abs_path_convert_exe[-11:] != 'convert.exe':
+    if remove_quotes(abs_path_convert_exe) == None or abs_path_convert_exe[-11:] != 'convert.exe':
         print("The path to 'convert.exe' is wrong.")
         return "Failed"
     
