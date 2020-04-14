@@ -45,23 +45,14 @@ def find(name, path):
 
 
 def is_gs_installed():
-    # try first
-    if find('gswin64c.exe', 'C:/Program Files') != None:
-        return True
-    if find('gswin32c.exe', 'C:/Program Files') != None:
-        return True
-    # then...
-    drive_letter = os.getenv("SystemDrive")
-    where_to_search = drive_letter + '/'
-    if find("gswin64c.exe", where_to_search) != None:
-        return True
-    if find("gswin32c.exe", where_to_search) != None:
-        return True
-    if find("gswin64.exe", where_to_search) != None:
-        return True
-    if find("gswin32.exe", where_to_search) != None:
-        return True
-    return False
+    gs_default_inst_folder = 'C:/Program Files/gs'
+    if os.path.isdir(gs_default_inst_folder):
+        if find('gswin64c.exe', gs_default_inst_folder) != None:
+            return True
+        if find('gswin32c.exe', gs_default_inst_folder) != None:
+            return True
+    else:
+        return False
 
 
 def get_abs_path_to_convert_exe():
@@ -71,7 +62,7 @@ def get_abs_path_to_convert_exe():
     """
     listPATH = os.environ['PATH'].split(';')
     for path in listPATH:
-        if ('Magick' in path) or ('magick' in path) or ('imagemag' in path):
+        if 'ImageMagick' in path:
             path_convert_exe = path + '/convert.exe'
             return path_convert_exe
     return None
@@ -394,14 +385,14 @@ class MainWindow:
         """
         tk.Label(
             self.frPathConvertNotFound,
-            text="'convert.exe' was not found in 'C:/Programm Files' and in PATH variable.\n"\
+            text="'convert.exe' was not found in PATH variable.\n"\
                 "Please make sure ImageMagick is installed.\nYou can use the download link below :",
             font=('Helvetica', 10, 'bold')
         ).pack()
         lDownloadLink = tk.Label(
             self.frPathConvertNotFound,
             text = "ftp://ftp.imagemagick.org/pub/ImageMagick/binaries\n"\
-                "(if you dont not which file to download, choose one that ends by Q16-x64-static.exe)",
+                "(if you dont not which file to download, try one that ends by Q16-x86-static.exe)",
             font=('Helvetica', 9, 'italic'),
             foreground="blue",
             cursor="hand2"
