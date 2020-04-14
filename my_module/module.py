@@ -7,6 +7,7 @@ import os
 import sys
 import base64
 import shutil
+import subprocess, shlex
 
 def display_error_window(error_name, msg):
     error_window = tk.Tk()
@@ -41,6 +42,14 @@ def remove_quotes(quoted_path):
     return quoted_path[1:-1]
 
 
+def double_backslash(path):
+    L = path.split('\\')
+    new_path = L[0]
+    for elem in L[1:]:
+        new_path += 2*'\\' + elem
+    return new_path
+
+
 def find(name, path):
     """ Search a file and return the first match.
     
@@ -71,7 +80,7 @@ def get_abs_path_to_convert_exe():
     listPATH = os.environ['PATH'].split(';')
     for path in listPATH:
         if 'ImageMagick' in path:
-            path_convert_exe = path + '/convert.exe'
+            path_convert_exe = path + '\convert.exe'
             return path_convert_exe
     return None
 
@@ -198,7 +207,8 @@ def conversion(abs_path_pdf, abs_path_convert_exe, density, int_transparent_bg):
         return "Retry"
     
     # Conversion PDF --> JPG
-    if remove_quotes(abs_path_convert_exe) == None or abs_path_convert_exe[-11:] != 'convert.exe':
+    if abs_path_convert_exe == None \
+        or remove_quotes(abs_path_convert_exe)[-11:] != 'convert.exe':
         print("The path to 'convert.exe' is wrong.")
         return "Failed"
     
@@ -209,12 +219,14 @@ def conversion(abs_path_pdf, abs_path_convert_exe, density, int_transparent_bg):
     else:
         transparency_option = ''
     
-    print_version_cmd = abs_path_convert_exe + ' -version'
+    # print_version_cmd = abs_path_convert_exe + ' -version'
     conversion_cmd = abs_path_convert_exe + ' -verbose ' + \
         density_option + transparency_option + \
         ' ' + abs_path_pdf + ' ' + abs_path_output_dir + '/' + pdf_name + '.jpg'
     
-    os.system(print_version_cmd + ' && ' + conversion_cmd)
+    print(conversion_cmd)
+    # os.system(conversion_cmd)
+    subprocess.call(shlex.split(conversion_cmd))
 
     # Getting the number of pages
     list_img = [name for name in os.listdir(abs_path_output_dir)]
