@@ -608,7 +608,7 @@ class MainWindow:
                 ).pack()
         frAfterConversion.pack(padx=10, pady=5)
 
-    def display_convertion_launcher(self):
+    def display_conversion_launcher(self):
         tk.Label(
             self.frConversionLauncher,
             text="\nConversion may take some time if the PDF have a lot of pages",
