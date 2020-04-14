@@ -6,11 +6,11 @@ This program is for **Windows users only** and was written in Python 3. It is in
 
 ## Demo :
 
-
+[![Watch the video](https://i.imgur.com/HAOabaX.png)](https://vimeo.com/407703378)
 
 ## Requirements :
 
-The following softwares have to be installed on your computer :
+The 2 following softwares have to be installed on your computer :
 
 * __ImageMagick__ : Download link : ftp://ftp.imagemagick.org/pub/ImageMagick/binaries
 
