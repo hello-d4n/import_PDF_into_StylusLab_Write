@@ -358,7 +358,7 @@ class MainWindow:
     
 
     def display_gs_not_found_error(self):
-        frGsNotFound = tk.Frame()
+        frGsNotFound = tk.Frame(highlightbackground="black", highlightthickness=1)
         tk.Label(
             frGsNotFound,
             text="It seems that GhostScript is not installed on your computer.\n" \
@@ -399,20 +399,38 @@ class MainWindow:
         
         """
         tk.Label(
-            text="'convert.exe' was not found in PATH variable, please select "\
-                "manually this file\n It is usually stored in the installation "\
-                "folder of ImageMagick."
+            self.frPathConvertNotFound,
+            text="'convert.exe' was not found in 'C:/Programm Files' and in PATH variable.\n"\
+                "Please make sure ImageMagick is installed.\nYou can use the download link below :",
+            font=('Helvetica', 10, 'bold')
         ).pack()
-
+        lDownloadLink = tk.Label(
+            self.frPathConvertNotFound,
+            text = "ftp://ftp.imagemagick.org/pub/ImageMagick/binaries\n"\
+                "(if you dont not which file to download, choose one that ends by Q16-x64-static.exe)",
+            font=('Helvetica', 9, 'italic'),
+            foreground="blue",
+            cursor="hand2"
+        )
+        lDownloadLink.pack(pady=5)
+        link = "ftp://ftp.imagemagick.org/pub/ImageMagick/binaries"
+        lDownloadLink.bind("<Button-1>", lambda e: open_new(link))
+        tk.Label(
+            self.frPathConvertNotFound,
+            text="If ImageMagick is already installed or if you use the Portable version,\n"\
+                "then please select the file :",
+            font=('Helvetica', 10, 'bold')
+        ).pack()
         self.bSelectConvertExe.configure(
             text="Select 'convert.exe'",
             command=self.when_bSelectConvertExe_clicked
         )
-        self.bSelectConvertExe.pack(padx=5, pady=5, side=tk.LEFT)
+        self.bSelectConvertExe.pack(padx=5)
         self.lAbsPathConvertExe.configure(text="")
-        self.lAbsPathConvertExe.pack(padx=5, pady=5, side=tk.RIGHT)
+        self.lAbsPathConvertExe.pack(padx=5)
 
-        self.frPathConvertNotFound.pack(padx=10)
+        self.frPathConvertNotFound.configure(highlightbackground="black", highlightthickness=1)
+        self.frPathConvertNotFound.pack(padx=10, pady=10)
 
 
     def get_AbsPathConvertExe(self):
