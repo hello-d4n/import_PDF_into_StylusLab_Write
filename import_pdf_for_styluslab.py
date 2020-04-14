@@ -8,7 +8,6 @@ myApp = mod.MainWindow(window)
 myApp.set_icon("icon.ico")
 
 if not mod.is_gs_installed():
-    myApp.window.withdraw()
     myApp.display_gs_not_found_error()
 
 myApp.display_title()
