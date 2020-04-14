@@ -552,7 +552,7 @@ class MainWindow:
         
         self.cbBgIsTransparent.configure(
             text="PDF has transparent background (check this box if the output document "\
-                "has a black bakcground)",
+                "has a black background)",
             variable=self.PDFHasTranspBackground,
             offvalue=0,
             onvalue=1
