@@ -13,6 +13,8 @@ if not mod.is_gs_installed():
     myApp.display_gs_not_found_error()
 
 ABS_PATH_CONVERT = mod.get_abs_path_to_convert_exe()
+if ' ' in ABS_PATH_CONVERT:
+    ABS_PATH_CONVERT = '"' + ABS_PATH_CONVERT + '"'
 
 if ABS_PATH_CONVERT == None:
     myApp.display_get_convert_manually()
