@@ -18,7 +18,6 @@ includefiles = ['icon.ico']
 
 setup(name='Import PDF into StylusLab Write',
       version='1.0',
-      author = "A. Daniel",
       description='Convert PDF documents to HTML/SVG',
       executables=executables,
       options = {'build_exe': {'include_files':includefiles}}
